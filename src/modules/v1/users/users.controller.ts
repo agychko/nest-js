@@ -1,13 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schemas/users.schema';
 
-@Controller('users')
+@Controller('v1/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
+  @Post('create')
   async create(@Body() createUserDto: CreateUserDto) {
     await this.usersService.create(createUserDto);
   }
@@ -17,13 +18,21 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string): Promise<User> {
-    return this.usersService.findOne(id);
+  @Get('find')
+  async findByEmail(@Body('email') email: string): Promise<User> {
+    return this.usersService.findByEmail(email);
   }
 
-  @Delete(':id')
-  async delete(@Param('id') id: string) {
-    return this.usersService.delete(id);
+  @Post('update')
+  async updateByEmail(
+    @Body('email') email: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.usersService.updateByEmail(email, updateUserDto);
+  }
+
+  @Delete('delete')
+  async deleteByEmail(@Body('email') email: string) {
+    return this.usersService.deleteByEmail(email);
   }
 }
