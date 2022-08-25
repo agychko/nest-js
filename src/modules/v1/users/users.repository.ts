@@ -3,6 +3,7 @@ import { User, UserDocument } from './schemas/users.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
+import IUser from './interfaces/user.interface';
 
 export class UsersRepository {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
@@ -16,7 +17,7 @@ export class UsersRepository {
     return this.userModel.find().exec();
   }
 
-  async findByEmail(email: string): Promise<User> {
+  async findByEmail(email: string): Promise<IUser> {
     return this.userModel.findOne({ email: email }).exec();
   }
 

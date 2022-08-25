@@ -3,6 +3,7 @@ import { User } from './schemas/users.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from './users.repository';
+import IUser from './interfaces/user.interface';
 
 @Injectable()
 export class UsersService {
@@ -16,7 +17,7 @@ export class UsersService {
     return this.usersRepository.findAll();
   }
 
-  async findByEmail(email: string): Promise<User> {
+  async findByEmail(email: string): Promise<IUser> {
     return this.usersRepository.findByEmail(email);
   }
   async updateByEmail(email: string, updateUserDto: UpdateUserDto) {

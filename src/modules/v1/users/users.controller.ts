@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schemas/users.schema';
+import IUser from './interfaces/user.interface';
 
 @Controller('v1/users')
 export class UsersController {
@@ -19,7 +20,7 @@ export class UsersController {
   }
 
   @Get('find')
-  async findByEmail(@Body('email') email: string): Promise<User> {
+  async findByEmail(@Body('email') email: string): Promise<IUser> {
     return this.usersService.findByEmail(email);
   }
 
