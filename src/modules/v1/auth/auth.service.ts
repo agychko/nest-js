@@ -23,7 +23,7 @@ export class AuthService {
     return null;
   }
 
-  async login(user: IUser) {
+  async generateJwt(user: IUser) {
     const payload = {
       _id: user._id,
       fullName: user.fullName,
@@ -37,6 +37,11 @@ export class AuthService {
       secret: jwtConstants.refreshKey,
       expiresIn: '60m',
     });
+    return { access_token, refresh_token };
+  }
+
+  async login(user: IUser) {
+    const { access_token, refresh_token } = await this.generateJwt(user);
     const token: Token = await this.authRepository.findByUserId(user._id);
     if (token) {
       await this.authRepository.updateByUserId(user._id, {
