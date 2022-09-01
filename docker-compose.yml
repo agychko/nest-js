@@ -5,9 +5,6 @@ services:
       context: .
       dockerfile: ./Dockerfile
     container_name: app
-    volumes:
-      - ./:/usr/src/app:cached
-      - /usr/src/app/node_modules # anonymous volume for node_modules only
     restart: always
     ports:
       - 3000:3000
@@ -18,8 +15,7 @@ services:
 
   mongodb:
     container_name: mongodb
-    image: mongo:latest
+    image: mongo:3.6.8
     restart: always
     ports:
       - 27017:27017
-  
