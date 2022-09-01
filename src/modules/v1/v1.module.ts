@@ -5,8 +5,10 @@ import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://mongodb:27017/app'),
-    // MongooseModule.forRoot('mongodb://localhost:27017/app'),
+    // MongooseModule.forRoot('mongodb://mongodb:27017/app'),
+    MongooseModule.forRoot(
+      'mongodb+srv://User:usergmail.com@cluster0.wozxehz.mongodb.net/test',
+    ),
     UsersModule,
     AuthModule,
   ],
