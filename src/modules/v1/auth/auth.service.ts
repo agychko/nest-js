@@ -15,9 +15,9 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(fullName: string, email: string): Promise<IUser> {
+  async validateUser(firstName: string, lastName: string, email: string): Promise<IUser> {
     const user = await this.usersService.findByEmail(email);
-    if (user && user.fullName === fullName) {
+    if (user && user.firstName === firstName && user.lastName === lastName) {
       return user;
     }
     return null;
@@ -26,7 +26,8 @@ export class AuthService {
   async generateJwt(user: IUser) {
     const payload = {
       _id: user._id,
-      fullName: user.fullName,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
     };
     const access_token: string = this.jwtService.sign(payload, {

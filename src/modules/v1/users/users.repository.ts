@@ -14,7 +14,7 @@ export class UsersRepository {
   }
 
   async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+    return this.userModel.find({}, null, {sort:{lastName:1}}).exec();
   }
 
   async findByEmail(email: string): Promise<IUser> {

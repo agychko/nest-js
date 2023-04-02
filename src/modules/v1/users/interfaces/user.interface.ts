@@ -3,5 +3,6 @@
 export default interface IUser {
   _id: string;
   email: string;
-  fullName: string;
+  firstName: string;
+  lastName: string;
 }
