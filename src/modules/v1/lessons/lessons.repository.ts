@@ -1,7 +1,7 @@
 import { Model } from "mongoose";
 import { Lesson, LessonDocument } from "./schemas/lessons.schema";
 import { CreateLessonDto } from "./dto/create-lesson.dto";
-// import { UpdateLessonDto } from "./dto/update-lesson.dto";
+import { UpdateLessonDto } from "./dto/update-lesson.dto";
 import { InjectModel } from "@nestjs/mongoose";
 
 export class LessonsRepository {
@@ -13,6 +13,18 @@ export class LessonsRepository {
     }
 
     async findAll(): Promise<Lesson[]> {
-        return this.lessonModel.find({}, null, {sort:{dateTime:1}}).exec();
+        return this.lessonModel.find().exec();
+    }
+
+    async updateById(
+        _id: string, 
+        updateLessonDto: UpdateLessonDto,
+        ): Promise<Lesson> {
+        const updatedLesson = this.lessonModel.findOneAndUpdate(
+            { _id: _id }, 
+            updateLessonDto,
+            { new: true },
+            ).exec();
+        return updatedLesson;
     }
 }
