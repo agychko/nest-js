@@ -13,4 +13,4 @@ import { Lesson, LessonSchema } from "./schemas/lessons.schema";
     providers: [LessonService, LessonsRepository],
     exports: [LessonService],
 })
-export class LessonsModule {}
+export class LessonsModule { }

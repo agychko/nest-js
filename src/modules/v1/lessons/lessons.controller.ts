@@ -8,7 +8,7 @@ import { UpdateLessonDto } from "./dto/update-lesson.dto";
 @ApiTags('Lessons')
 @Controller('v1/lessons')
 export class LessonsController {
-    constructor(private readonly lessonsService: LessonService) {}
+    constructor(private readonly lessonsService: LessonService) { }
 
     @Post('create')
     async create(@Body() createLessonDto: CreateLessonDto) {

@@ -8,13 +8,17 @@ import IUser from './interfaces/user.interface';
 export class UsersRepository {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<IUser> {
     const createdUser = new this.userModel(createUserDto);
     return createdUser.save();
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.find({}, null, {sort:{lastName:1}}).exec();
+  async findAll(): Promise<IUser[]> {
+    return this.userModel.find(
+      {}, 
+      null, 
+      { sort: { lastName: 1 } }
+      ).exec();
   }
 
   async findByEmail(email: string): Promise<IUser> {
@@ -24,7 +28,7 @@ export class UsersRepository {
   async updateByEmail(
     email: string,
     updateUserDto: UpdateUserDto,
-  ): Promise<User> {
+  ): Promise<IUser> {
     const updatedUser = await this.userModel.findOneAndUpdate(
       { email: email },
       updateUserDto,
@@ -33,7 +37,7 @@ export class UsersRepository {
     return updatedUser;
   }
 
-  async deleteByEmail(email: string): Promise<User> {
+  async deleteByEmail(email: string): Promise<IUser> {
     const deletedUser = await this.userModel
       .findOneAndRemove({ email: email })
       .exec();

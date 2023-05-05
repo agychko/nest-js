@@ -1,27 +1,25 @@
-import { Model } from 'mongoose';
-import { Token, TokenDocument } from './schemas/tokens.schema';
-import { CreateTokenDto } from './dto/create-token.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { UpdateTokenDto } from './dto/update-token.dto';
+import { InjectModel } from "@nestjs/mongoose";
+import { Token, TokenDocument } from "./schemas/tokens.schema";
+import { Model } from "mongoose";
+import { CreateTokenDto } from "./dto/create-token.dto";
+import { UpdateTokenDto } from "./dto/update-token.dto";
 
-export class AuthRepository {
-  constructor(
-    @InjectModel(Token.name) private tokenModel: Model<TokenDocument>,
-  ) {}
+export class TokensRepository {
+  constructor(@InjectModel(Token.name) private tokenModel: Model<TokenDocument>) { }
 
   async create(createTokenDto: CreateTokenDto): Promise<Token> {
     const createdToken = new this.tokenModel(createTokenDto);
     return createdToken.save();
   }
 
-  async findByUserId(userId: string): Promise<Token> {
+  async findByUserId(userId: string): Promise<Token> | undefined {
     return this.tokenModel.findOne({ userId: userId }).exec();
   }
 
   async updateByUserId(
     userId: string,
     updateTokenDto: UpdateTokenDto,
-  ): Promise<Token> {
+  ): Promise<Token> | undefined {
     const updatedToken = await this.tokenModel.findOneAndUpdate(
       { userId: userId },
       updateTokenDto,
@@ -30,7 +28,7 @@ export class AuthRepository {
     return updatedToken;
   }
 
-  async deleteByUserId(userId: string): Promise<Token> {
+  async deleteByUserId(userId: string): Promise<Token> | undefined {
     const deletedToken = await this.tokenModel
       .findOneAndRemove({ userId: userId })
       .exec();

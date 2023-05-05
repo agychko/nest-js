@@ -1,8 +1,9 @@
-// import { ObjectId } from 'mongoose';
+import { Document } from "mongoose";
 
-export default interface IUser {
-  _id: string;
-  email: string;
+export default interface IUser extends Document {
   firstName: string;
   lastName: string;
+  email: string;
+  password: string;
+  isDeleted: boolean;
 }
