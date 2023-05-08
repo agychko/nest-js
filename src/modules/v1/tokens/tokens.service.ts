@@ -1,28 +1,28 @@
-import { CreateTokenDto } from "./dto/create-token.dto";
-import { UpdateTokenDto } from "./dto/update-token.dto";
-import { Token } from "./schemas/tokens.schema";
-import { TokensRepository } from "./tokens.repository";
 
+import { Injectable } from "@nestjs/common";
+import { CreateTokenDto } from "./dto/create-token.dto";
+import { TokensRepository } from "./tokens.repository";
+import { Token } from "./schemas/tokens.schema";
+import { UpdateTokenDto } from "./dto/update-token.dto";
+
+@Injectable()
 export class TokensService {
-    constructor(private readonly tokenRepository: TokensRepository) { }
+    constructor(private readonly tokensRepository: TokensRepository) { }
 
     async create(createTokenDto: CreateTokenDto): Promise<Token> {
-        return this.tokenRepository.create(createTokenDto);
+        return this.tokensRepository.create(createTokenDto);
     }
 
-    async findByUserId(userId: string): Promise<Token> | null {
-        const token = this.tokenRepository.findByUserId(userId);
-        if (token) {
-            return token;
-        }
-        return null;
+    async findByUserId(userId: string): Promise<Token> {
+        return this.tokensRepository.findByUserId(userId);
     }
 
-    async updateByUserId(userId: string, updateTokenDto: UpdateTokenDto): Promise<Token> | undefined {
-        return this.tokenRepository.updateByUserId(userId, updateTokenDto);
+    async updateByUserId(userId: string, updateTokenDto: UpdateTokenDto): Promise<Token> {
+        return this.tokensRepository.updateByUserId(userId, updateTokenDto);
     }
 
-    async deleteByUserId(userId: string): Promise<Token> | undefined {
-        return this.tokenRepository.deleteByUserId(userId);
+    async deleteByUserId(userId: string): Promise<Token> {
+        return this.tokensRepository.deleteByUserId(userId);
     }
+
 }

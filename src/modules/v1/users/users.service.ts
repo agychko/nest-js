@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from './users.repository';
 import IUser from './interfaces/user.interface';
-import { comparePassword, hashPassword } from '../utils/bcrypt';
+import { comparePassword, hashPassword } from '../../../utils/bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -12,16 +12,6 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<IUser> {
     const password = await hashPassword(createUserDto.password);
     return this.usersRepository.create({ ...createUserDto, password });
-  }
-
-  async validateUser(email: string, password: string): Promise<IUser> {
-    const user = await this.usersRepository.findByEmail(email);
-    const comparedPassword = await comparePassword(password, user.password);
-    console.log(comparedPassword);
-    if (user && comparedPassword) {
-      return user;
-    }
-    return null;
   }
 
   async findAll(): Promise<IUser[]> {
@@ -34,7 +24,6 @@ export class UsersService {
 
   async findByEmail(email: string): Promise<IUser> {
     const exsistingUser = await this.usersRepository.findByEmail(email);
-    console.log(exsistingUser);
     if (!exsistingUser) {
       throw new NotFoundException(`User with email:${email} not exsist!`)
     }

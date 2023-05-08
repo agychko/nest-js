@@ -7,25 +7,29 @@ import { Token } from '../tokens/schemas/tokens.schema';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { User } from '../users/schemas/users.schema';
 import { TokensService } from '../tokens/tokens.service';
-import { comparePassword } from '../utils/bcrypt';
+import { comparePassword } from '../../../utils/bcrypt';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly tokenService: TokensService,
+    private readonly tokensService: TokensService,
     private readonly usersService: UsersService,
     private jwtService: JwtService,
   ) { }
 
-  // async validateUser(email: string, password: string): Promise<IUser> {
-  //   return this.usersService.validateUser(email, password);
-  // }
-
   async validateUser(email: string, password: string): Promise<IUser> {
     const user = await this.usersService.findByEmail(email);
     const comparedPassword = await comparePassword(password, user.password);
-    console.log(comparedPassword);
     if (user && comparedPassword) {
+      return user;
+    }
+    return null;
+  }
+
+  async validateToken(payload: any, token: string) {
+    const oldRefreshToken = await this.tokensService.findByUserId(payload._id);
+    if (oldRefreshToken.refreshToken === token) {
+      const user = await this.usersService.findByEmail(payload.email);
       return user;
     }
     return null;
@@ -40,11 +44,11 @@ export class AuthService {
     };
     const access_token: string = this.jwtService.sign(payload, {
       secret: jwtConstants.accessKey,
-      expiresIn: '60s',
+      expiresIn: jwtConstants.accessExpires,
     });
     const refresh_token: string = this.jwtService.sign(payload, {
       secret: jwtConstants.refreshKey,
-      expiresIn: '60m',
+      expiresIn: jwtConstants.refreshExpires,
     });
     return { access_token, refresh_token };
   }
@@ -56,29 +60,34 @@ export class AuthService {
   async login(user: IUser) {
     const { access_token, refresh_token } = await this.generateJwt(user);
     const userId = user.id;
-    console.log(userId);
-    console.log(user);
-    const token: Token | null | undefined = await this.tokenService.findByUserId(userId);
-    console.log(token.userId);
+    const token: Token = await this.tokensService.findByUserId(userId);
     if (token) {
-      await this.tokenService.updateByUserId(userId, {
-        refreshToken: refresh_token,
+      await this.tokensService.updateByUserId(userId, {
+        refreshToken: refresh_token
       });
     } else {
-      await this.tokenService.create({
+      await this.tokensService.create({
         userId: userId,
         refreshToken: refresh_token,
       });
     }
     return {
-      user: user,
-      userId: user._id,
+      access_token: access_token,
+      refresh_token: refresh_token,
+    };
+  }
+
+  async refresh(user: IUser) {
+    const { access_token, refresh_token } = await this.generateJwt(user);
+    const userId = user.id;
+    await this.tokensService.updateByUserId(userId, { refreshToken: refresh_token });
+    return {
       access_token: access_token,
       refresh_token: refresh_token,
     };
   }
 
   async logout(user: IUser) {
-    await this.tokenService.deleteByUserId(user._id);
+    await this.tokensService.deleteByUserId(user._id);
   }
 }

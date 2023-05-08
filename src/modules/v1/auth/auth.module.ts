@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Token, TokenSchema } from '../tokens/schemas/tokens.schema';
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './strategies/local.strategy';
-import { JwtStrategy } from './strategies/jwt.strategy';
+import { AccessJwtStrategy } from './strategies/access-jwt.strategy';
 import { UsersModule } from '../users/users.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
@@ -14,6 +14,9 @@ import { UsersService } from '../users/users.service';
 import { UsersRepository } from '../users/users.repository';
 import { User, UserSchema } from '../users/schemas/users.schema';
 import { TokensService } from '../tokens/tokens.service';
+import { TokensController } from '../tokens/tokens.controller';
+import { TokensRepository } from '../tokens/tokens.repository';
+import { RefreshJwtStrategy } from './strategies/refresh-jwt.strategy';
 
 @Module({
   imports: [
@@ -26,8 +29,21 @@ import { TokensService } from '../tokens/tokens.service';
       // signOptions: { expiresIn: '60s' },
     }),
   ],
-  controllers: [AuthController, UsersController],
-  providers: [AuthService, TokensService, LocalStrategy, JwtStrategy, UsersService, UsersRepository],
-  exports: [AuthService, UsersService],
+  controllers: [
+    AuthController,
+    UsersController,
+    TokensController
+  ],
+  providers: [
+    AuthService,
+    TokensService,
+    LocalStrategy,
+    AccessJwtStrategy,
+    RefreshJwtStrategy,
+    UsersService,
+    UsersRepository,
+    TokensRepository
+  ],
+  exports: [AuthService, UsersService, TokensService],
 })
 export class AuthModule { }

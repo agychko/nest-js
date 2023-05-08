@@ -3,13 +3,12 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 import IUser from '../../users/interfaces/user.interface';
-import { User } from '../../users/schemas/users.schema';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private authService: AuthService) {
     super({
-      usernameField: 'email'
+      usernameField: 'email',
     });
   }
 
@@ -18,7 +17,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
-    console.log(user);
     return user;
   }
 }

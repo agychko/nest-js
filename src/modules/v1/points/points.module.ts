@@ -6,11 +6,11 @@ import { PointsRepository } from "./points.repository";
 import { PointsService } from "./points.service";
 
 @Module({
-imports: [
-    MongooseModule.forFeature([{name: Point.name, schema: PointSchema}]),
-],
-controllers: [PointsController],
-providers: [PointsRepository, PointsService],
-exports: [PointsService]
+    imports: [
+        MongooseModule.forFeature([{ name: Point.name, schema: PointSchema }]),
+    ],
+    controllers: [PointsController],
+    providers: [PointsRepository, PointsService],
+    exports: [PointsService]
 })
-export class PointsModule {}
+export class PointsModule { }

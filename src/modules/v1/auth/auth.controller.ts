@@ -14,6 +14,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { MongoExceptionFilter } from 'src/handlers/mongo-exception.filter';
+import { RefreshAuthGuard } from './guards/refresh-auth.guard';
 
 @ApiTags('Auth')
 @Controller('v1/auth')
@@ -36,6 +37,12 @@ export class AuthController {
   @Get('user-info')
   getUserInfo(@Request() req) {
     return req.user;
+  }
+
+  @UseGuards(RefreshAuthGuard)
+  @Get('refresh')
+  async refresh(@Request() req) {
+    return this.authService.refresh(req.user);
   }
 
   @UseGuards(JwtAuthGuard)

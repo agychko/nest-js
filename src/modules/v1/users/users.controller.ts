@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Get, HttpStatus, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Post, Res, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schemas/users.schema';
 import IUser from './interfaces/user.interface';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Users')
 @Controller('v1/users')
@@ -19,21 +20,17 @@ export class UsersController {
         message: 'User has been created successfully',
         newUser
       });
-    } catch (error) {
+    } catch (err) {
       return response.status(HttpStatus.BAD_REQUEST).json({
         statusCode: 400,
         message: 'Error: User not created!',
         error: 'Bad Request',
-        details: error
+        details: err
       });
     }
   }
 
-  @Post('validate')
-  async validate(@Body('email') email: string, @Body('password') password: string) {
-    return this.usersService.validateUser(email, password);
-  }
-
+  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(): Promise<User[]> {
     return this.usersService.findAll();
