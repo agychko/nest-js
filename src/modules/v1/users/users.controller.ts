@@ -18,39 +18,77 @@ export class UsersController {
       const newUser = await this.usersService.create(createUserDto);
       return response.status(HttpStatus.CREATED).json({
         message: 'User has been created successfully',
-        newUser
+        data: newUser,
       });
     } catch (err) {
       return response.status(HttpStatus.BAD_REQUEST).json({
         statusCode: 400,
-        message: 'Error: User not created!',
+        message: 'User not created!',
         error: 'Bad Request',
-        details: err
       });
     }
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll(): Promise<User[]> {
-    return this.usersService.findAll();
+  async findAll(@Res() response): Promise<User[]> {
+    try {
+      const usersData = await this.usersService.findAll();
+      return response.status(HttpStatus.OK).json({
+        message: 'All users data found successfully',
+        data: usersData,
+      });
+    }
+    catch (err) {
+      return response.status(err.status).json(err.response);
+    }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('find')
-  async findByEmail(@Body('email') email: string): Promise<IUser> {
-    return this.usersService.findByEmail(email);
+  async findByEmail(@Res() response, @Body('email') email: string): Promise<IUser> {
+    try {
+      const existingUser = await this.usersService.findByEmail(email);
+      return response.status(HttpStatus.OK).json({
+        message: 'User found successfully',
+        data: existingUser,
+      });
+    }
+    catch (err) {
+      return response.status(err.status).json(err.response);
+    }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('update')
   async updateByEmail(
+    @Res() response,
     @Body('email') email: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.usersService.updateByEmail(email, updateUserDto);
+    try {
+      const existingUser = await this.usersService.updateByEmail(email, updateUserDto);
+      return response.status(HttpStatus.OK).json({
+        message: 'User has been successfully updated',
+        data: existingUser,
+      });
+    }
+    catch (err) {
+      return response.status(err.status).json(err.response);
+    }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete('delete')
-  async deleteByEmail(@Body('email') email: string) {
-    return this.usersService.deleteByEmail(email);
+  async deleteByEmail(@Res() response, @Body('email') email: string) {
+    try {
+      const deletedUser = await this.usersService.deleteByEmail(email);
+      return response.status(HttpStatus.OK).json({
+        message: 'User deleted successfully',
+        data: deletedUser,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
   }
 }

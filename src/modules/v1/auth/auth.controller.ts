@@ -7,6 +7,8 @@ import {
   UseGuards,
   Body,
   UseFilters,
+  Res,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -29,13 +31,23 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req) {
-    return this.authService.login(req.user);
+  async login(@Request() req, @Res() response) {
+    try {
+      const loginData = await this.authService.login(req.user);
+      return response.status(HttpStatus.OK).json({
+        message: 'Logged in sucessfully',
+        data: loginData,
+      });
+    }
+    catch (err) {
+      return response.status(err.status).json(err.response);
+    }
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('user-info')
   getUserInfo(@Request() req) {
+    console.log(req.user);
     return req.user;
   }
 

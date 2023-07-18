@@ -1,5 +1,5 @@
 
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateTokenDto } from "./dto/create-token.dto";
 import { TokensRepository } from "./tokens.repository";
 import { Token } from "./schemas/tokens.schema";
@@ -14,15 +14,21 @@ export class TokensService {
     }
 
     async findByUserId(userId: string): Promise<Token> {
-        return this.tokensRepository.findByUserId(userId);
+        const exsistingToken = await this.tokensRepository.findByUserId(userId);
+
+        return exsistingToken;
     }
 
     async updateByUserId(userId: string, updateTokenDto: UpdateTokenDto): Promise<Token> {
-        return this.tokensRepository.updateByUserId(userId, updateTokenDto);
+        const exsistingToken = await this.tokensRepository.updateByUserId(userId, updateTokenDto);
+
+        return exsistingToken;
     }
 
     async deleteByUserId(userId: string): Promise<Token> {
-        return this.tokensRepository.deleteByUserId(userId);
+        const deletedToken = await this.tokensRepository.deleteByUserId(userId);
+
+        return deletedToken;
     }
 
 }

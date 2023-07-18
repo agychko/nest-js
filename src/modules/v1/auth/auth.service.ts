@@ -7,7 +7,7 @@ import { Token } from '../tokens/schemas/tokens.schema';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { User } from '../users/schemas/users.schema';
 import { TokensService } from '../tokens/tokens.service';
-import { comparePassword } from '../../../utils/bcrypt';
+import { comparePassword, hashPassword } from '../../../utils/bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -54,7 +54,8 @@ export class AuthService {
   }
 
   async register(createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+    const password = await hashPassword(createUserDto.password);
+    return this.usersService.create({ ...createUserDto, password });
   }
 
   async login(user: IUser) {
