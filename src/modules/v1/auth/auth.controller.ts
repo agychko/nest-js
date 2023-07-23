@@ -47,7 +47,8 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('user-info')
   getUserInfo(@Request() req) {
-    console.log(req.user);
+    const { user } = req;
+    console.log(user);
     return req.user;
   }
 

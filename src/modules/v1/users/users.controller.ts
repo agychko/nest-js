@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Post, Request, Res, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -6,6 +6,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schemas/users.schema';
 import IUser from './interfaces/user.interface';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Roles } from '../auth/roles/roles.decorator';
+import { Role } from '../auth/roles/role.enum';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @ApiTags('Users')
 @Controller('v1/users')
@@ -59,15 +62,18 @@ export class UsersController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('update')
   async updateByEmail(
+    @Request() request,
     @Res() response,
     @Body('email') email: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
     try {
       const existingUser = await this.usersService.updateByEmail(email, updateUserDto);
+      console.log(request.user);
       return response.status(HttpStatus.OK).json({
         message: 'User has been successfully updated',
         data: existingUser,
@@ -78,7 +84,8 @@ export class UsersController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete('delete')
   async deleteByEmail(@Res() response, @Body('email') email: string) {
     try {

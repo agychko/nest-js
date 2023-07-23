@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsEmail, MaxLength, MinLength } from 'class-validator';
+import { IsString, IsNotEmpty, IsEmail, MaxLength, MinLength, IsEnum, IsOptional } from 'class-validator';
+import { Role } from '../../auth/roles/role.enum';
+import { DefaultSchemaOptions } from 'mongoose';
 
 export class CreateUserDto {
   @ApiProperty()
@@ -27,4 +29,9 @@ export class CreateUserDto {
   @IsNotEmpty()
   @MinLength(8)
   password: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsEnum(Role)
+  roles: Role[];
 }

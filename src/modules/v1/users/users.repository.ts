@@ -6,7 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import IUser from './interfaces/user.interface';
 
 export class UsersRepository {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
 
   async create(createUserDto: CreateUserDto): Promise<IUser> {
     const createdUser = new this.userModel(createUserDto);
@@ -15,10 +15,10 @@ export class UsersRepository {
 
   async findAll(): Promise<IUser[]> {
     return this.userModel.find(
-      {}, 
-      null, 
+      {},
+      null,
       { sort: { lastName: 1 } }
-      ).exec();
+    ).exec();
   }
 
   async findByEmail(email: string): Promise<IUser> {
@@ -33,7 +33,7 @@ export class UsersRepository {
       { email: email },
       updateUserDto,
       { new: true },
-    );
+    ).exec();
     return updatedUser;
   }
 

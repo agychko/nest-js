@@ -17,6 +17,8 @@ import { TokensService } from '../tokens/tokens.service';
 import { TokensController } from '../tokens/tokens.controller';
 import { TokensRepository } from '../tokens/tokens.repository';
 import { RefreshJwtStrategy } from './strategies/refresh-jwt.strategy';
+import { RolesGuard } from './guards/roles.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -35,6 +37,10 @@ import { RefreshJwtStrategy } from './strategies/refresh-jwt.strategy';
     TokensController
   ],
   providers: [
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RolesGuard
+    // },
     AuthService,
     TokensService,
     LocalStrategy,
